@@ -1,0 +1,7 @@
+interface:
+  display_name: "Codex Dream Skin Studio"
+  short_description: "Install and verify safe custom Codex Desktop themes"
+  icon_small: "./assets/skill-icon.svg"
+  icon_large: "./assets/skill-icon.svg"
+  brand_color: "#75AADB"
+  default_prompt: "Use $codex-dream-skin-studio to create and verify a safe macOS Codex Desktop theme in English or Spanish."

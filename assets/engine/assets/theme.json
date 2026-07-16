@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "argentina-demo",
+  "language": "en",
+  "name": "Argentina · Messi World Champion",
+  "brandSubtitle": "CODEX DREAM SKIN",
+  "tagline": "Let inspiration flow in sky blue and white.",
+  "projectPrefix": "Select project · ",
+  "projectLabel": "◉  Select project",
+  "statusText": "DREAM SKIN ONLINE",
+  "quote": "HEART · MAGIC · GLORY",
+  "image": "default-background.jpg",
+  "colors": {
+    "background": "#071116",
+    "panel": "#0b1a20",
+    "panelAlt": "#10272c",
+    "accent": "#75bde8",
+    "accentAlt": "#75bde8",
+    "secondary": "#f5f7f4",
+    "highlight": "#d6ad4b",
+    "text": "#f2fbff",
+    "muted": "#acc8d7",
+    "line": "rgba(117, 189, 232, .32)"
+  }
+}
