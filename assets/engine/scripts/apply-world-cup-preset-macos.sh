@@ -35,7 +35,7 @@ case "$PRESET" in
     ACCENT="#f2c14e"
     SECONDARY="#d71920"
     HIGHLIGHT="#8f1620"
-    ART_POSITION="right center"
+    ART_POSITION="82% center"
     ART_SCALE="100%"
     ;;
   argentina)
@@ -52,7 +52,7 @@ case "$PRESET" in
     ACCENT="#75bde8"
     SECONDARY="#f5f7f4"
     HIGHLIGHT="#d6ad4b"
-    ART_POSITION="right center"
+    ART_POSITION="82% center"
     ART_SCALE="100%"
     ;;
   *)

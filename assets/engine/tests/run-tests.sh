@@ -22,6 +22,10 @@ if /usr/bin/grep -R -n -E '(writeFile|rename|copyFile|rm).*app\.asar' "$ROOT/scr
   printf 'A runtime script appears to mutate app.asar.\n' >&2
   exit 1
 fi
+if ! /usr/bin/grep -F -q -- '--user-data-dir="$PROFILE_ROOT"' "$ROOT/scripts/common-macos.sh"; then
+  printf 'The Chromium 136+ isolated user-data directory launch switch is missing.\n' >&2
+  exit 1
+fi
 
 "$NODE" "$ROOT/scripts/injector.mjs" --check-payload >/dev/null
 
@@ -76,7 +80,7 @@ BACKUP="$TMP/theme-backup.json"
 "$NODE" "$ROOT/scripts/theme-config.mjs" restore "$CONFIG" "$BACKUP" >/dev/null
 /usr/bin/cmp -s "$CONFIG" "$TMP/original.toml"
 
-/usr/bin/env -u HOME /bin/bash -c '. "$1/scripts/common-macos.sh"; [ -n "$HOME" ] && [ "$SKIN_VERSION" = "1.0.0" ]' _ "$ROOT"
+/usr/bin/env -u HOME /bin/bash -c '. "$1/scripts/common-macos.sh"; [ -n "$HOME" ] && [ "$SKIN_VERSION" = "1.0.1" ] && case "$PROFILE_ROOT" in "$STATE_ROOT"/*) true ;; *) false ;; esac' _ "$ROOT"
 "$ROOT/scripts/doctor-macos.sh" >/dev/null
 
-printf 'PASS: syntax, English/Spanish themes, payload, config round-trip, HOME recovery, signature, and doctor checks.\n'
+printf 'PASS: syntax, English/Spanish themes, isolated profile, payload, config round-trip, HOME recovery, signature, and doctor checks.\n'

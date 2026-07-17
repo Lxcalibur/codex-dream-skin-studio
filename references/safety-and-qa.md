@@ -6,6 +6,8 @@
 - Discover `com.openai.codex` on each launch. Do not assume the internal executable path survives an update.
 - Use only the Node.js runtime bundled with Codex after validating the app and runtime signatures, OpenAI Team ID `2DC432GLL2`, architecture, and Node.js major version 20 or newer.
 - Bind Chromium DevTools Protocol to loopback. Accept only a listener owned by Codex or a legitimate descendant and only an `app://` renderer with expected native shell markers.
+- Launch the themed session with the dedicated profile at `~/Library/Application Support/CodexDreamSkinStudio/profile`. Chromium 136+ requires a non-default `--user-data-dir` for remote debugging.
+- Never copy, move, or symlink the user's default Codex browser profile into the isolated Dream Skin profile.
 - Consider loopback CDP locally privileged. Restore fully when the user no longer wants the themed session.
 - Preserve sidebar, navigation, project selector, messages, approvals, attachments, menus, Outputs, composer controls, keyboard focus, and scrolling.
 - Keep every decorative layer at `pointer-events: none`.
@@ -27,6 +29,7 @@ The result must report:
 - `live: true`
 - `officialAppSignatureValid: true`
 - `modifiesAppAsar: false`
+- `isolatedProfile: true`
 - a loopback port
 - the expected theme name and non-zero image/payload sizes
 

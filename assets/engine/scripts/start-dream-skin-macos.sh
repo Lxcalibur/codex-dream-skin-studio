@@ -94,7 +94,10 @@ INJECTOR_PID="$(launch_injector_daemon "$PORT")"
 /bin/kill -0 "$INJECTOR_PID" 2>/dev/null || fail "The injector exited during startup. See $INJECTOR_ERROR_LOG"
 INJECTOR_STARTED_AT="$(process_started_at "$INJECTOR_PID")"
 [ -n "$INJECTOR_STARTED_AT" ] || fail "Could not record the injector process start time."
-CODEX_PID="$(codex_main_pids | /usr/bin/head -n 1)"
+CODEX_PID="$(/bin/ps -axo pid=,command= | /usr/bin/awk -v exe="$CODEX_EXE" -v profile="--user-data-dir=$PROFILE_ROOT" '
+  index($0, exe) && index($0, profile) && !found { print $1; found=1 }
+')"
+[ -n "$CODEX_PID" ] || fail "Could not identify the isolated-profile Codex main process."
 write_state "$PORT" "$INJECTOR_PID" "$INJECTOR_STARTED_AT" "$CODEX_PID"
 
 if ! "$NODE" "$INJECTOR" --verify --port "$PORT" --theme-dir "$THEME_DIR" --timeout-ms 30000 >/dev/null; then
