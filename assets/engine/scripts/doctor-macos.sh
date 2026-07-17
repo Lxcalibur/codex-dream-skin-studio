@@ -46,6 +46,8 @@ fi
     nodeVersion: process.argv[6],
     officialAppSignatureValid: true,
     modifiesAppAsar: false,
+    isolatedProfile: true,
+    profileRoot: process.argv[9],
     live: process.argv[7] === "true",
     port: Number(process.argv[8]),
     theme: {
@@ -56,4 +58,4 @@ fi
     },
   };
   console.log(JSON.stringify(result, null, 2));
-' "$PAYLOAD_JSON" "$SKIN_VERSION" "$(/usr/bin/uname -m)" "$CODEX_VERSION" "$CODEX_TEAM_ID" "$NODE_VERSION" "$LIVE" "$PORT"
+' "$PAYLOAD_JSON" "$SKIN_VERSION" "$(/usr/bin/uname -m)" "$CODEX_VERSION" "$CODEX_TEAM_ID" "$NODE_VERSION" "$LIVE" "$PORT" "$PROFILE_ROOT"

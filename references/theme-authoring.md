@@ -28,7 +28,7 @@ Use `portrait` when:
 - preserving the full body on the home screen matters;
 - the source has a narrow vertical aspect ratio.
 
-The task route intentionally uses full-canvas cover behavior even when the home route uses portrait containment. This avoids the “photo occupies only half of the screen” failure while keeping the home subject complete.
+The task route combines a darkened full-canvas copy with a contained portrait layer. This avoids the “photo occupies only half of the screen” failure while keeping the subject's face and body complete.
 
 ## Crop controls
 
@@ -76,14 +76,14 @@ Colors must be six-digit hex values. The name, tagline, and quote remain live DO
 - High-resolution Lionel Messi portrait.
 - Argentina blue/white/gold palette.
 - Home route uses portrait containment at 100%.
-- Task route uses a full-canvas background.
+- Task route uses a full-canvas backdrop plus a contained subject layer.
 
 ### Spain
 
 - High-resolution Lamine Yamal portrait.
 - Spain red/yellow palette.
 - Home route uses portrait containment at 100%.
-- Task route uses a full-canvas background.
+- Task route uses a full-canvas backdrop plus a contained subject layer.
 
 The source and license records are stored at `assets/engine/assets/world-cup/ATTRIBUTION.md`.
 

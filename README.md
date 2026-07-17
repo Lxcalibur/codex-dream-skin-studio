@@ -24,6 +24,7 @@
 | README instructions | English, Español, 中文 |
 | Generated theme interface | English (`--language en`), Español (`--language es`) |
 | Skill commands and diagnostics | English |
+| Themed browser profile | Isolated under `~/Library/Application Support/CodexDreamSkinStudio/profile` |
 
 ---
 
@@ -43,6 +44,7 @@
 - The official signed Codex Desktop application.
 - Codex has been opened at least once.
 - No global Node.js or npm installation is required.
+- The themed session uses a separate local Chromium profile; it never copies or modifies the default Codex profile.
 
 ### 1. Install the Skill
 
@@ -147,6 +149,7 @@ Restore the saved Codex base theme and restart Codex:
 - La aplicación oficial y firmada de Codex Desktop.
 - Haber abierto Codex al menos una vez.
 - No es necesario instalar Node.js ni npm globalmente.
+- La sesión con tema usa un perfil local aislado de Chromium; no copia ni modifica el perfil predeterminado de Codex.
 
 ### 1. Instalar el Skill
 
@@ -251,6 +254,7 @@ Restaura el tema base guardado y reinicia Codex:
 - 官方签名的 Codex Desktop 应用。
 - 至少启动过一次 Codex。
 - 不需要全局安装 Node.js 或 npm。
+- 主题会话使用独立的本地 Chromium 资料目录，不会复制或修改默认 Codex 资料。
 
 ### 1. 安装 Skill
 
@@ -345,6 +349,7 @@ SKILL_DIR="$HOME/.codex/skills/codex-dream-skin-studio"
 
 - CDP is bound to loopback and accepted only when the endpoint belongs to the verified Codex process.
 - The official Codex application bundle, code signature, and `app.asar` remain unchanged.
+- Chromium remote debugging uses a dedicated non-default profile; the default Codex profile is never copied, moved, or symlinked.
 - Software source code is licensed under the [MIT License](LICENSE).
 - Bundled photograph sources, authors, modifications, and Creative Commons terms are recorded in [ATTRIBUTION.md](assets/engine/assets/world-cup/ATTRIBUTION.md).
 - No endorsement by OpenAI, the photographers, the players, their teams, Wikimedia Commons, or tournament organizers is implied.

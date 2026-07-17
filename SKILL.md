@@ -63,7 +63,7 @@ Install the bundled engine without launching first:
 "$SKILL_DIR/scripts/dream-skin.sh" install --no-launch
 ```
 
-This installs a user-owned copy at `~/.codex/codex-dream-skin-studio`, creates reversible theme state under `~/Library/Application Support/CodexDreamSkinStudio`, and leaves the official app untouched.
+This installs a user-owned copy at `~/.codex/codex-dream-skin-studio`, creates reversible theme state under `~/Library/Application Support/CodexDreamSkinStudio`, and leaves the official app untouched. The themed session uses a dedicated profile inside that state directory because Chromium 136+ rejects remote debugging against the default profile. Never copy or symlink the real Codex profile into it.
 
 ### 3. Build the theme
 

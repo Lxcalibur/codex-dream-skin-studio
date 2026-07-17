@@ -106,16 +106,19 @@ html.codex-dream-skin main.main-surface:not(.dream-skin-home-shell) {
     var(--dream-skin-art) var(--dream-skin-position, right center) / cover no-repeat !important;
 }
 
-/* Portrait sports photography gets a clear subject layer over a darkened
-   edge-to-edge copy, so faces and bodies survive the ultra-wide crop. */
+/* Portrait sports photography uses a darkened edge-to-edge copy plus a
+   contained subject layer, so the canvas stays full while faces and bodies
+   survive the ultra-wide crop. */
 html.codex-dream-skin[data-dream-skin-art-layout="portrait"] main.main-surface:not(.dream-skin-home-shell) {
   background-image:
     linear-gradient(90deg, rgba(4, 10, 17, .86) 0%, rgba(6, 17, 24, .64) 48%, rgba(8, 18, 25, .30) 100%),
     radial-gradient(circle at 70% 38%, rgba(124, 255, 70, .08), transparent 28%),
+    var(--dream-skin-art),
+    linear-gradient(rgba(4, 10, 17, .36), rgba(4, 10, 17, .36)),
     var(--dream-skin-art) !important;
   background-repeat: no-repeat !important;
-  background-size: 100% 100%, 100% 100%, cover !important;
-  background-position: center, center, var(--dream-skin-position, right center) !important;
+  background-size: 100% 100%, 100% 100%, auto var(--dream-skin-scale, 100%), 100% 100%, cover !important;
+  background-position: center, center, var(--dream-skin-position, right center), center, var(--dream-skin-position, right center) !important;
 }
 
 html.codex-dream-skin main.main-surface:not(.dream-skin-home-shell) [role="main"] {

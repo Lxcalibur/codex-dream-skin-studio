@@ -17,6 +17,7 @@ STATE_ROOT="$HOME/Library/Application Support/CodexDreamSkinStudio"
 STATE_PATH="$STATE_ROOT/state.json"
 THEME_BACKUP_PATH="$STATE_ROOT/theme-backup.json"
 THEME_DIR="$STATE_ROOT/theme"
+PROFILE_ROOT="$STATE_ROOT/profile"
 CONFIG_PATH="$HOME/.codex/config.toml"
 INJECTOR_LOG="$STATE_ROOT/injector.log"
 INJECTOR_ERROR_LOG="$STATE_ROOT/injector-error.log"
@@ -26,7 +27,7 @@ START_ERROR_LOG="$STATE_ROOT/start-error.log"
 CODEX_APP_JOB_LABEL="com.openai.codex-dream-skin-studio.app"
 INJECTOR_JOB_LABEL="com.openai.codex-dream-skin-studio.injector"
 EXPECTED_CODEX_TEAM_ID="${CODEX_EXPECTED_TEAM_ID:-2DC432GLL2}"
-SKIN_VERSION="1.0.0"
+SKIN_VERSION="1.0.1"
 
 fail() {
   local message="$*"
@@ -39,8 +40,8 @@ fail() {
 }
 
 ensure_state_root() {
-  /bin/mkdir -p "$STATE_ROOT"
-  /bin/chmod 700 "$STATE_ROOT"
+  /bin/mkdir -p "$STATE_ROOT" "$PROFILE_ROOT"
+  /bin/chmod 700 "$STATE_ROOT" "$PROFILE_ROOT"
 }
 
 discover_codex_app() {
@@ -261,9 +262,9 @@ write_state() {
   local codex_pid="$4"
   "$NODE" -e '
     const fs = require("node:fs");
-    const [file, version, port, pid, startedAt, injector, node, nodeVersion, bundle, exe, appVersion, teamId, root, themeDir, codexPid, arch] = process.argv.slice(1);
+    const [file, version, port, pid, startedAt, injector, node, nodeVersion, bundle, exe, appVersion, teamId, root, themeDir, profileRoot, codexPid, arch] = process.argv.slice(1);
     const state = {
-      schemaVersion: 4,
+      schemaVersion: 5,
       platform: `darwin-${arch}`,
       skinVersion: version,
       port: Number(port),
@@ -279,12 +280,14 @@ write_state() {
       codexPid: Number(codexPid || 0),
       projectRoot: root,
       themeDir,
+      profileRoot,
+      isolatedProfile: true,
       createdAt: new Date().toISOString()
     };
     const temporary = `${file}.${process.pid}.tmp`;
     fs.writeFileSync(temporary, `${JSON.stringify(state, null, 2)}\n`, { mode: 0o600 });
     fs.renameSync(temporary, file);
-  ' "$STATE_PATH" "$SKIN_VERSION" "$port" "$injector_pid" "$injector_started_at" "$INJECTOR" "$NODE" "$NODE_VERSION" "$CODEX_BUNDLE" "$CODEX_EXE" "$CODEX_VERSION" "$CODEX_TEAM_ID" "$PROJECT_ROOT" "$THEME_DIR" "$codex_pid" "$(/usr/bin/uname -m)"
+  ' "$STATE_PATH" "$SKIN_VERSION" "$port" "$injector_pid" "$injector_started_at" "$INJECTOR" "$NODE" "$NODE_VERSION" "$CODEX_BUNDLE" "$CODEX_EXE" "$CODEX_VERSION" "$CODEX_TEAM_ID" "$PROJECT_ROOT" "$THEME_DIR" "$PROFILE_ROOT" "$codex_pid" "$(/usr/bin/uname -m)"
 }
 
 stop_recorded_injector() {
@@ -317,6 +320,7 @@ stop_recorded_injector() {
 launch_injector_daemon() {
   local port="$1"
   local pid=""
+  local confirmed_pid=""
   # launchd can delay a just-resubmitted keepalive job for roughly ten seconds
   # after a rapid theme switch. Leave enough room to observe the verified PID.
   local deadline=$((SECONDS + 20))
@@ -328,10 +332,15 @@ launch_injector_daemon() {
   /bin/launchctl kickstart -k "gui/$(/usr/bin/id -u)/$INJECTOR_JOB_LABEL"
   while [ "$SECONDS" -lt "$deadline" ]; do
     pid="$(/bin/launchctl print "gui/$(/usr/bin/id -u)/$INJECTOR_JOB_LABEL" 2>/dev/null \
-      | /usr/bin/awk '/^[[:space:]]*pid = [0-9]+/{print $3; exit}')"
+      | /usr/bin/awk '/^[[:space:]]*pid = [0-9]+/ && !found {print $3; found=1}')"
     if [ -n "$pid" ] && /bin/kill -0 "$pid" 2>/dev/null; then
-      printf '%s\n' "$pid"
-      return 0
+      /bin/sleep 1
+      confirmed_pid="$(/bin/launchctl print "gui/$(/usr/bin/id -u)/$INJECTOR_JOB_LABEL" 2>/dev/null \
+        | /usr/bin/awk '/^[[:space:]]*pid = [0-9]+/ && !found {print $3; found=1}')"
+      if [ "$confirmed_pid" = "$pid" ] && /bin/kill -0 "$confirmed_pid" 2>/dev/null; then
+        printf '%s\n' "$confirmed_pid"
+        return 0
+      fi
     fi
     /bin/sleep 0.2
   done
@@ -340,10 +349,13 @@ launch_injector_daemon() {
 
 launch_codex_with_cdp() {
   local port="$1"
+  /bin/mkdir -p "$PROFILE_ROOT"
+  /bin/chmod 700 "$PROFILE_ROOT"
   : > "$APP_LOG"
   : > "$APP_ERROR_LOG"
   /bin/launchctl remove "$CODEX_APP_JOB_LABEL" >/dev/null 2>&1 || true
   /bin/launchctl submit -l "$CODEX_APP_JOB_LABEL" -o "$APP_LOG" -e "$APP_ERROR_LOG" -- "$CODEX_EXE" \
+    --user-data-dir="$PROFILE_ROOT" \
     --remote-debugging-address=127.0.0.1 \
     --remote-debugging-port="$port"
   /bin/launchctl kickstart -k "gui/$(/usr/bin/id -u)/$CODEX_APP_JOB_LABEL"
